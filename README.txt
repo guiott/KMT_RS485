@@ -22,12 +22,12 @@ python3 KMT_RS485.py [OPTIONS]
   `OFF <ch[,ch,...]>`               `ch` = channel (relay) number  Switch OFF one or more
                                     `1-8` or `ALL`                 relays
 
-  `STATUS`                          N/A                            Show current status of all
+  `STATUS`                          none                           Show current status of all
                                                                    relays (ON/OFF)
 
-  `HELP`                            N/A                            Show all available commands
+  `HELP`                            none                           Show all available commands
 
-  `EXIT`                            N/A                            Exit interactive mode (same
+  `EXIT`                            none                           Exit interactive mode (same
                                                                    as `Ctrl-D`)
 
   `--port /dev/ttyS4`               Serial port (default           Dynamically select
