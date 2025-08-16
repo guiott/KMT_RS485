@@ -1,34 +1,104 @@
-KMTronic Relay – Quick Reference
+# KMTronic Relay -- Quick Reference
 
-Avvio dello script
+[KMTronic RS485 Relay Controller
+(8-channel)](https://kmtronic.com/product/2792/rs485-relay-controller-eight-channel.html)
 
-python3 kmtronic_interactive.py [OPTIONS]
+## Starting the Script
 
-Comando / Sintassi          	Parametri / Note                                        	Descrizione
-ON <ch[,ch,...]> [-t seconds]	ch = numero canale 1-8 o ALL; -t N = durata in secondi (solo per ON)	Accende uno o più relè. Con -t N, si spegne automaticamente dopo N secondi
-OFF <ch[,ch,...]>           	ch = numero canale 1-8 o ALL                               	Spegne uno o più relè
-STATUS                      	nessuno                                                  	Mostra lo stato attuale di tutti i relè (ON/OFF)
-HELP                        	nessuno                                                  	Mostra tutti i comandi disponibili
-EXIT                        	nessuno                                                  	Esce dalla modalità interattiva
---port /dev/ttyS4           	Specifica la porta seriale (default /dev/ttyS4)          	Utile se il dispositivo è su porta diversa
---id N                       	Board ID via DIP switch (default 1)                       	Permette di gestire più schede RS485 sulla stessa linea
---verbose                    	nessuno                                                  	Mostra lo stato di tutti i relè dopo ogni comando
---compact                    	nessuno                                                  	Sopprime output extra, utile per pipe o logging
+``` bash
+python3 KMT_RS485.py [OPTIONS]
+```
 
-Esempi pratici
-ON 1                         	Accende il relè 1
-ON 2,4,6                      	Accende i relè 2, 4 e 6
-ON ALL -t 5                    	Accende tutti i relè, spegne automaticamente dopo 5 secondi
-OFF 1,3,5                      	Spegne i relè 1,3,5
-STATUS                         	Mostra stato attuale di tutti i relè
-HELP                           	Mostra la tabella dei comandi
-EXIT                           	Esce dalla modalità interattiva
+## Commands
 
-echo "ON 1,3" | python3 kmtronic_relay.py --verbose	Accende 1 e 3 con output visibile
+  ---------------------------------------------------------------------------------------------
+  Command / Syntax                  Parameters / Notes             Description
+  --------------------------------- ------------------------------ ----------------------------
+  `ON <ch[,ch,...]> [-t seconds]`   `ch` = channel (relay) number  Switch ON one or more
+                                    `1-8` or `ALL`; `-t N` =       relays. With `-t N`, relays
+                                    timeout in seconds (ON only)   automatically switch OFF
+                                                                   after *N* seconds
 
+  `OFF <ch[,ch,...]>`               `ch` = channel (relay) number  Switch OFF one or more
+                                    `1-8` or `ALL`                 relays
 
-Esempi
+  `STATUS`                          N/A                            Show current status of all
+                                                                   relays (ON/OFF)
 
+  `HELP`                            N/A                            Show all available commands
+
+  `EXIT`                            N/A                            Exit interactive mode (same
+                                                                   as `Ctrl-D`)
+
+  `--port /dev/ttyS4`               Serial port (default           Dynamically select
+                                    `/dev/ttyS4`)                  communication port
+
+  `--id N`                          Board ID via DIP switch        Manage multiple RS485 boards
+                                    (default `1`)                  on the same line
+
+  `--verbose`                       none                           Show relay status after
+                                                                   every command
+  ---------------------------------------------------------------------------------------------
+
+## Practical Examples
+
+``` bash
+ON 1
+```
+
+Turn ON relay 1
+
+``` bash
+ON 2,4,6
+```
+
+Turn ON relays 2, 4, and 6
+
+``` bash
+ON ALL -t 5
+```
+
+Turn ON all relays, auto switch OFF after 5 seconds
+
+``` bash
+OFF 1,3,5
+```
+
+Turn OFF relays 1, 3, and 5
+
+``` bash
+STATUS
+```
+
+Show current status of all relays
+
+``` bash
+HELP
+```
+
+Display the command table
+
+``` bash
+EXIT
+```
+
+Exit interactive mode
+
+------------------------------------------------------------------------
+
+### Using echo + script
+
+``` bash
+echo "ON 1,3" | python3 kmtronic_relay.py --verbose
+```
+
+Turn ON relays 1 and 3, with visible output
+
+------------------------------------------------------------------------
+
+## Full Example Session
+
+``` bash
 $ python3 kmtronic_relay.py --verbose
 Relay> ON 1
 1:ON 2:OFF 3:OFF 4:OFF 5:OFF 6:OFF 7:OFF 8:OFF
@@ -36,7 +106,7 @@ Relay> OFF 1
 1:OFF 2:OFF 3:OFF 4:OFF 5:OFF 6:OFF 7:OFF 8:OFF
 Relay> ON ALL -t 5
 1:ON 2:ON 3:ON 4:ON 5:ON 6:ON 7:ON 8:ON
-# Dopo 5 secondi tutti i relè si spengono automaticamente
+# After 5 seconds all relays switch OFF automatically
 Relay> STATUS
 1:OFF 2:OFF 3:OFF 4:OFF 5:OFF 6:OFF 7:OFF 8:OFF
 Relay> HELP
@@ -47,27 +117,38 @@ Commands:
   HELP
   EXIT
 Relay> EXIT
+```
 
-	•	Senza verbose (solo output strettamente necessario):
-$ echo "ON 1" | python3 kmtronic_relay.py --compact
-$ echo "STATUS" | python3 kmtronic_relay.py --compact
-1:ON 2:OFF 3:OFF 4:OFF 5:OFF 6:OFF 7:OFF 8:OFF
+------------------------------------------------------------------------
 
-	•	Con verbose (stato visualizzato sempre):
+## Output Modes
+
+-   **Verbose mode** (always show relay status):
+
+``` bash
 $ echo "ON ALL -t 3" | python3 kmtronic_relay.py --verbose
 1:ON 2:ON 3:ON 4:ON 5:ON 6:ON 7:ON 8:ON
-# Dopo 3 secondi tutti i relè si spengono automaticamente
+# After 3 seconds all relays switch OFF automatically
+```
 
-	•	Comando multiplo:
+-   **Multiple relays ON**:
+
+``` bash
 $ echo "ON 1,3,5" | python3 kmtronic_relay.py --verbose
 1:ON 2:OFF 3:ON 4:OFF 5:ON 6:OFF 7:OFF 8:OFF
+```
 
-	•	Spegnimento multiplo:
+-   **Multiple relays OFF**:
+
+``` bash
 $ echo "OFF 1,3,5" | python3 kmtronic_relay.py --verbose
 1:OFF 2:OFF 3:OFF 4:OFF 5:OFF 6:OFF 7:OFF 8:OFF
+```
 
-	Timer su più relè
+-   **Timer with multiple relays**:
+
+``` bash
 $ echo "ON 2,4,6 -t 10" | python3 kmtronic_relay.py --verbose
 2:ON 4:ON 6:ON ...
-# Dopo 10 secondi, i relè 2,4,6 si spengono automaticamente
-
+# After 10 seconds, relays 2,4,6 switch OFF automatically
+```
