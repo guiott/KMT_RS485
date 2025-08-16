@@ -9,7 +9,7 @@ Easily control **KMTronic relays** via command line with Python scripts.
 ## 🚀 Starting the Script
 
 ```bash
-python3 kmtronic_interactive.py [OPTIONS]
+python3 KMT_RS485.py [OPTIONS]
 ```
 
 ---
