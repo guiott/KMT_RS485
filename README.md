@@ -1,4 +1,6 @@
-# ⚡ KMTronic Relay – Quick Reference
+# ⚡ RS485 KMTronic Relay – Quick Reference
+[KMTronic RS485 Relay Controller (8-channel)](https://kmtronic.com/product/2792/rs485-relay-controller-eight-channel.html)
+
 
 Easily control **KMTronic relays** via command line with Python scripts.
 
